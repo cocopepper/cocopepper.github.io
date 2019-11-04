@@ -2,7 +2,6 @@ var easyTimer=30;
 var moderateTimer = 45;
 var hardTimer=60;
 
-
 var easy = [
 "bribery",
 "trojan horse",
@@ -23,6 +22,7 @@ var easy = [
 "fraud",
 "report"
 ];
+
 var easyLetters = [
 "briberyingft",
 "trojanhorsevirus",
@@ -43,6 +43,7 @@ var easyLetters = [
 "fraudsakei",
 "reportcall"
 ];
+
 var moderate = ["alert",
 "audit report",
 "fictitious",
@@ -58,6 +59,7 @@ var moderate = ["alert",
 "source of fund",
 "suspicious",
 "terrorist"];
+
 var moderateLetters = ["alertmsi",
 "audit reportmeeng",
 "fictitiousaenrs",
@@ -73,6 +75,7 @@ var moderateLetters = ["alertmsi",
 "sourceoffundmoneys",
 "suspiciousmfngr",
 "terroristmingw"];
+
 var hard = ["unusual",
 "due diligence",
 "legitimate",
@@ -87,6 +90,7 @@ var hard = ["unusual",
 "conflict of interest",
 "investigation",
 "evil twins"];
+
 var hardLetters = ["unusualqiesn",
 "duediligencefitras",
 "legitimateornas",
