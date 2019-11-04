@@ -185,6 +185,7 @@ function select(letter, el) {
     score+= scoreCounter;
     $("#score").text(score);
     clearInterval(counter);
+    go(category);
   }
 }
 
