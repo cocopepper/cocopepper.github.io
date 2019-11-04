@@ -27,12 +27,6 @@ String.prototype.shuffle = function () {
     return a.join("");
 }
 
-function home() {
-  $("#content").hide();
-  $("#title").show();
-  clearInterval(counter)
-}
-
 function go(mode) {
 	$("#content").show();
 	$("#title").hide();
@@ -51,6 +45,7 @@ function go(mode) {
   	count=hardTimer;
   }
 
+  $("#category").attr("src", "img/" + mode + ".png");
 	dir = Math.ceil(Math.random() * words.length);
 	actualWord = words[dir-1].toLowerCase();
 	compareWord = actualWord.replace(/ /g, "");
@@ -67,6 +62,12 @@ function go(mode) {
   $("#IMAGE_4").attr("src",imageDir+"4.jpg");
 
   counter =setInterval(timer, 1000); //1000 will  run it every 1 second
+}
+
+function home() {
+  $("#content").hide();
+  $("#title").show();
+  clearInterval(counter);
 }
 
 function init() {
@@ -121,7 +122,7 @@ function select(letter, el) {
 }
 
 function remove(block, letter) {
-  tries--;
+  tries--; 
   $(letter).show();
   $(block).addClass("word");
   $(block).attr("src", unusedBlock);
