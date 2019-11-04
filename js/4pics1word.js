@@ -52,9 +52,19 @@ function isGameOver() {
   return false;
 }
 
+function isLastTry() {
+  if (gameTries <= 0) {
+    alert("No more passes!");
+    gameTries++;
+    return true;
+  }
+
+  return false;
+}
+
 function go(mode) {
 
-  if (isGameOver()) {
+  if (isLastTry()) {
     return;
   }
 
@@ -116,7 +126,7 @@ function go(mode) {
 
 function home() { 
   gameTries--; 
-  if (isGameOver()) {
+  if (isLastTry()) {
     return;
   }
   $(".content").hide();
@@ -158,7 +168,7 @@ function clue() {
 }
 
 function init() {
-  if (isGameOver()) {
+  if (isLastTry()) {
     return;
   }
   $("#score").text(score);
