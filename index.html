@@ -25,7 +25,7 @@
         margin-left:30px;
         font-family: sans-serif; 
       }
-      .reset {
+      .reset, .home {
       	width: 100px;
         margin-right:30px;
       }
@@ -42,11 +42,11 @@
     <script type="text/javascript" src="js/4pics1word.js">
     </script>
     
-      <br/>
-      <br/>
-      <br/>
-      <br/> 
-      <div id="title">
+    <br/>
+    <br/>
+    <br/>
+    <br/> 
+    <div id="title">
       <br/> 
       <br/> 
       <br/> 
@@ -55,7 +55,7 @@
       <img onclick="go('easy')" src="img/easy.png"/>
       <img onclick="go('moderate')"src="img/moderate.png"/>
       <img onclick="go('difficult')"src="img/difficult.png"/>
-      </div>
+    </div>
     <div style="text-align: center;vertical-align: middle;" id="content">
       <img class="pic" id="IMAGE_1"/>
       <img class="pic" id="IMAGE_2"/>
@@ -68,11 +68,10 @@
       <div id="LETTERS"></div>
       <br/>      
       <img onclick="init(); return false;" class="reset" src="img/reset.png"/>
+      <img onclick="home(); return false;" class="home" src="img/home.png"/>
       <span id="timer"></span>
     </div>
     <script type="text/javascript">
-      
-       
       $(document).ready(function () {
       	$("#content").hide();
       });
