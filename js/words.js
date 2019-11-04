@@ -2,6 +2,11 @@ var easyTimer=30;
 var moderateTimer = 45;
 var hardTimer=60;
 
+var easyScore=5;
+var moderateScore=10;
+var hardScore=15;
+var clueLimit = 5;
+
 var easy = [
 "bribery",
 "trojan horse",
@@ -43,6 +48,7 @@ var easyLetters = [
 "fraudsakei",
 "reportcall"
 ];
+
 
 var moderate = ["alert",
 "audit report",
