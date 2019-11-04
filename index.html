@@ -28,9 +28,14 @@
       .reset, .home {
       	width: 70px;
         margin-right:30px;
+        cursor: pointer;
       }
       #title{
       	text-align: center;
+      }
+      #category{
+        width: 70px;
+        margin-right:30px;
       }
     </style>
   </head>
@@ -69,6 +74,7 @@
       <br/>      
       <img onclick="init(); return false;" class="reset" src="img/reset.png"/>
       <img onclick="home(); return false;" class="home" src="img/home.png"/>
+      <img id="category" src="img/easy.png"/>
       <span id="timer"></span>
     </div>
     <script type="text/javascript">
