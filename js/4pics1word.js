@@ -121,6 +121,7 @@ function select(letter, el) {
 }
 
 function remove(block, letter) {
+  tries--;
   $(letter).show();
   $(block).addClass("word");
   $(block).attr("src", unusedBlock);
