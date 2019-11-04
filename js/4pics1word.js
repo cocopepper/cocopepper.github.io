@@ -15,6 +15,8 @@ var scoreCounter;
 var usedWords = [""];
 var usedClue = 0;
 
+var gameTries = 3;
+
 var count=30;
 var counter;
 
@@ -34,12 +36,27 @@ String.prototype.shuffle = function () {
 }
 
 function pass() {
+  gameTries--; 
   go(category);
 }
 
 let checker = (arr, target) => target.every(v => arr.includes(v));
 
+function isGameOver() {
+  if (gameTries <= 0) {
+    alert("Game Over!");
+    alert("Final Score: " + score);
+    return true;
+  }
+
+  return false;
+}
+
 function go(mode) {
+
+  if (isGameOver()) {
+    return;
+  }
 
 	if (mode == "easy") {
   	words = easy;
@@ -63,7 +80,7 @@ function go(mode) {
     return;
   }
   category = mode;
-  $("#content").show();
+  $(".content").show();
   $("#title").hide();
 
   $("#category").attr("src", "img/" + mode + ".png");
@@ -97,13 +114,20 @@ function go(mode) {
   //counter =setInterval(timer, 1000); //1000 will  run it every 1 second
 }
 
-function home() {
-  $("#content").hide();
+function home() { 
+  gameTries--; 
+  if (isGameOver()) {
+    return;
+  }
+  $(".content").hide();
   $("#title").show();
   clearInterval(counter);
 }
 
 function clue() {
+  if (isGameOver()) {
+    return;
+  }
   if (score <= 0) {
     alert("Earn score first.");
     return; 
@@ -134,6 +158,9 @@ function clue() {
 }
 
 function init() {
+  if (isGameOver()) {
+    return;
+  }
   $("#score").text(score);
   tries = 0;
   guess = compareWord.replace(/\w/g,"_");
@@ -143,7 +170,11 @@ function init() {
   $("#LETTERS").text("");
   for (var i = 0, ctr=0; i < a.length; i++) {
     if (a[i]== " ") {
-      b += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      if (i > 12) {
+        b+= "<br/>";
+      } else {
+        b += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      }
     } else {
       b += "<img id=\""+ctr+"\" class=\"word\" src=\"" + unusedBlock + "\"/>";
       ctr++;
@@ -165,6 +196,9 @@ function init() {
 }
 
 function select(letter, el) {
+  if (isGameOver()) {
+    return;
+  }
   tries++;
   if (tries > len) {
     return;
@@ -190,6 +224,9 @@ function select(letter, el) {
 }
 
 function remove(block, letter) {
+  if (isGameOver()) {
+    return;
+  }
   tries--; 
   $(letter).show();
   $(block).addClass("word");
