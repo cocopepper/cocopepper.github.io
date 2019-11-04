@@ -215,11 +215,17 @@ function select(letter, el) {
   guess = guess.replace(/\_/, letter);
 
   if (guess.length == len && guess == compareWord) {
-    setTimeout(function () {alert("Correct!");}, 100);
-    score+= scoreCounter;
-    $("#score").text(score);
-    clearInterval(counter);
-    go(category);
+    setTimeout(function () {
+      score+= scoreCounter;
+      $("#score").text(score);
+      alert("Correct!");
+      gameTries--;
+      clearInterval(counter);
+      
+      if (!isGameOver()) {     
+        go(category); 
+      }
+    }, 100);
   }
 }
 
