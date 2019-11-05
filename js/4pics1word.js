@@ -1,22 +1,24 @@
-var timesUp = true;
 var letterDir = "img/letters/";
 var unusedBlock = letterDir + "used-answer-block.png";
-var words;
-var dir;
-var len;
-var tries;
 var imageDir;
-var actualWord="";
+
+var wordPool;
+var index;
+var wordLength;
+var originalWord="";
 var compareWord="";
-var letter;
-var letters;
+
+var shuffledChoices;
+var letterChoices;
+
+var guessCtr;
 var guess;
+
 var score = 0;
 var scoreCounter;
+
 var usedWords = [""];
 var usedClue = 0;
-
-var gameTries = 3;
 
 var count=30;
 var counter;
@@ -24,163 +26,30 @@ var counter;
 var category;
 
 String.prototype.shuffle = function () {
-    var a = this.split(""),
-        n = a.length;
+  var a = this.split(""),
+      n = a.length;
 
-    for(var i = n - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = a[i];
-        a[i] = a[j];
-        a[j] = tmp;
-    }
-    return a.join("");
-}
-
-function pass() {
-  gameTries--; 
-  go(category);
+  for(var i = n - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i];
+      a[i] = a[j];
+      a[j] = tmp;
+  }
+  return a.join("");
 }
 
 let checker = (arr, target) => target.every(v => arr.includes(v));
-
-function isGameOver() {
-  if (timesUp && count <= 0) {
-    alert("Time's Up!");
-    return true;
-  }
-  if (gameTries <= 0) {
-    alert("Game Over!");
-    alert("Final Score: " + score);
-    return true;
-  }
-
-  return false;
-}
-
-function isLastTry() {
-  if (gameTries <= 0) {
-    alert("No more passes!");
-    gameTries++;
-    return true;
-  }
-
-  return false;
-}
-
-function go(mode) {
-
-  if (isLastTry()) {
-    return;
-  }
-
-	if (mode == "easy") {
-  	words = easy;
-  	letters = easyLetters;
-  	count=easyTimer;
-    scoreCounter=easyScore;
-  } else if (mode == "moderate") {
-  	words = moderate;
-  	letters = moderateLetters;
-  	count=moderateTimer;
-    scoreCounter=moderateScore;
-  } else {
-  	words = hard;
-  	letters = hardLetters;	      	
-  	count=hardTimer;
-    scoreCounter=hardScore;
-  }
-
-  if (checker(usedWords, words)) {
-    alert ("No more words!");
-    return;
-  }
-  category = mode;
-  $(".content").show();
-  $("#title").hide();
-
-  $("#category").attr("src", "img/" + mode + ".png");
-	while (usedWords.includes(actualWord)) {
-    dir = Math.ceil(Math.random() * words.length);
-  	actualWord = words[dir-1].toLowerCase();
-  	compareWord = actualWord.replace(/ /g, "");
-    if (!usedWords.includes(actualWord)) {
-      usedWords.push(actualWord);
-      break;
-    }
-    if (checker(usedWords, words)) {
-      break;
-    }
-  } 
-
-  usedClue=0;
-  guess = compareWord.replace(/\w/g,"_");
-	len = compareWord.length;
-	imageDir = "img/"+mode +"/"+compareWord + "/";
-	letter = letters[dir-1].toLowerCase().replace(/ /g, "").shuffle();
-
-  init();
-
-  $("#IMAGE_1").attr("src",imageDir+"1.jpg");
-  $("#IMAGE_2").attr("src",imageDir+"2.jpg");
-  $("#IMAGE_3").attr("src",imageDir+"3.jpg");
-  $("#IMAGE_4").attr("src",imageDir+"4.jpg");
-
-  //$("#timer").hide();
-  counter =setInterval(timer, 1000); //1000 will  run it every 1 second
-}
-
-function home() { 
-  gameTries--; 
-  if (isLastTry()) {
-    return;
-  }
-  $(".content").hide();
-  $("#title").show();
-  clearInterval(counter);
-}
-
-function clue() {
-  if (isGameOver()) {
-    return;
-  }
-  if (score <= 0) {
-    alert("Earn score first.");
-    return; 
-  }
-  if (usedClue >= clueLimit) {
-    alert("All clues used already.");
-    return;
-  }
-  score--;
-  $("#score").text(score);
-  var i = Math.ceil(Math.random() * guess.length);
-  while (guess.indexOf("_") >= 0 && guess[i-1]!= "_") {
-    i = Math.ceil(Math.random() * guess.length);
-  }
-
-  var temp = guess.split("");
-  temp[i-1] = compareWord[i-1];
-  guess = temp.join("");
-
-  var el = $("input[value="+compareWord[i-1]+"]").parent().filter(":visible:first");
-  
-  var block = $("#"+[i-1]);
-  block[0].src =  el.find("img").attr("src");
-  block.removeClass("word");
-
-  el.hide();
-  usedClue++;
-}
 
 function init() {
   if (isLastTry()) {
     return;
   }
   $("#score").text(score);
-  tries = 0;
+  guessCtr = 0;
   guess = compareWord.replace(/\w/g,"_");
 
-  var a = actualWord.split("");
+  //Initialize blank boxes
+  var a = originalWord.split("");
   var b = "";
   $("#LETTERS").text("");
   for (var i = 0, ctr=0; i < a.length; i++) {
@@ -198,7 +67,8 @@ function init() {
   $("#WORDS").text("");
   $("#WORDS").append(b);
 
-  a = letter.split("");
+  //Initialize letter choices
+  a = shuffledChoices.split("");
   b = "";
   $("#LETTERS").text("");
   for (var i = 0; i < a.length; i++) {
@@ -210,26 +80,142 @@ function init() {
   $("#LETTERS").append(b);
 }
 
+function newWord(mode) {
+  if (isLastTry()) {
+    return;
+  }
+
+	if (mode == "easy") {
+  	wordPool = easy;
+  	letterChoices = easyLetters;
+  	count=easyTimer;
+    scoreCounter=easyScore;
+  } else if (mode == "moderate") {
+  	wordPool = moderate;
+  	letterChoices = moderateLetters;
+  	count=moderateTimer;
+    scoreCounter=moderateScore;
+  } else {
+  	wordPool = hard;
+  	letterChoices = hardLetters;	      	
+  	count=hardTimer;
+    scoreCounter=hardScore;
+  }
+
+  if (checker(usedWords, wordPool)) {
+    alert ("No more words!");
+    return;
+  }
+
+  category = mode;
+  $(".content").show();
+  $("#title").hide();
+
+  $("#category").attr("src", "img/" + mode + ".png");
+
+  //Prevents getting the same word from pool
+	while (usedWords.includes(originalWord)) {
+    index = Math.ceil(Math.random() * wordPool.length) - 1;
+  	originalWord = wordPool[index].toLowerCase();
+  	compareWord = originalWord.replace(/ /g, "");
+    if (!usedWords.includes(originalWord)) {
+      usedWords.push(originalWord);
+      break;
+    }
+    if (checker(usedWords, wordPool)) {
+      break;
+    }
+  } 
+
+  usedClue=0;
+  guess = compareWord.replace(/\w/g,"_");
+	wordLength = compareWord.length;
+	imageDir = "img/"+mode +"/"+compareWord + "/";
+	shuffledChoices = letterChoices[index].toLowerCase().replace(/ /g, "").shuffle();
+
+  init();
+
+  $("#IMAGE_1").attr("src",imageDir+"1.jpg");
+  $("#IMAGE_2").attr("src",imageDir+"2.jpg");
+  $("#IMAGE_3").attr("src",imageDir+"3.jpg");
+  $("#IMAGE_4").attr("src",imageDir+"4.jpg");
+
+  if (isTimed) {
+    counter =setInterval(timer, 1000); //1000 will  run it every 1 second
+  } else {
+    $("#timer").hide();    
+  }
+}
+
+function home() { 
+  gameTries--; 
+  if (isLastTry()) {
+    return;
+  }
+  $(".content").hide();
+  $("#title").show();
+  clearInterval(counter);
+}
+
+function clue() {
+  if (isGameOver()) {
+    return;
+  }
+
+  if (score <= 0) {
+    alert("Earn score first.");
+    return; 
+  }
+
+  if (hasClueLimit && usedClue >= clueLimit) {
+    alert("All clues used already.");
+    return;
+  }
+
+  score--;
+  $("#score").text(score);
+
+  var i = Math.ceil(Math.random() * guess.length) - 1;
+  while (guess.indexOf("_") >= 0 && guess[i]!= "_") {
+    i = Math.ceil(Math.random() * guess.length) - 1;
+  }
+
+  var temp = guess.split("");
+  temp[i] = compareWord[i];
+  guess = temp.join("");
+
+  var el = $("input[value="+compareWord[i]+"]").parent().filter(":visible:first");
+  
+  var block = $("#"+[i]);
+  block[0].src =  el.find("img").attr("src");
+  block.removeClass("word");
+  
+  el.hide();
+  usedClue++;
+  guessCtr++;
+}
+
 function select(letter, el) {
   if (isGameOver()) {
     return;
   }
-  tries++;
-  if (tries > len) {
+
+  if (guessCtr >= wordLength) {
     return;
   }
+
+  guessCtr++;
 
   $(el).hide();
   $(".word")[0].src =  $(el).find("img")[0].src;
 
   var block = $(".word:first");
   block.removeClass("word");
-
   block.click(function () {remove(this, el);});
 
   guess = guess.replace(/\_/, letter);
 
-  if (guess.length == len && guess == compareWord) {
+  if (guess.length == wordLength && guess == compareWord) {
     setTimeout(function () {
       score+= scoreCounter;
       $("#score").text(score);
@@ -238,7 +224,7 @@ function select(letter, el) {
       clearInterval(counter);
       
       if (!isGameOver()) {     
-        go(category); 
+        newWord(category); 
       }
     }, 100);
   }
@@ -248,10 +234,12 @@ function remove(block, letter) {
   if (isGameOver()) {
     return;
   }
-  tries--; 
+  
+  guessCtr--; 
   $(letter).show();
   $(block).addClass("word");
   $(block).attr("src", unusedBlock);
+  $(block).unbind("click");
 
   var temp = guess.split("");
   temp[block.id] = "_";
@@ -260,7 +248,7 @@ function remove(block, letter) {
 
 function timer()
 {
-  count=count-1;
+  count = count - 1;
   if (count <= 0)
   {
      clearInterval(counter);
@@ -271,8 +259,37 @@ function timer()
 
   $("#timer").text(count);
   $("#timer").css("color", "black");
-  if ( count <= 5) {
+  if (count <= 5) {
   	$("#timer").css("color", "red");
   }
   //Do code for showing the number of seconds here
+}
+
+function pass() {
+  gameTries--; 
+  newWord(category);
+}
+
+function isGameOver() {
+  if (checkTimesUp && count <= 0) {
+    alert("Time's Up!");
+    return true;
+  }
+  if (hasLimit && gameTries <= 0) {
+    alert("Game Over!");
+    alert("Final Score: " + score);
+    return true;
+  }
+
+  return false;
+}
+
+function isLastTry() {
+  if (hasLimit && gameTries <= 0) {
+    alert("No more passes!");
+    gameTries++;
+    return true;
+  }
+
+  return false;
 }
