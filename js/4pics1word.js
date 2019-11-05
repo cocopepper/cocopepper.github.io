@@ -120,8 +120,8 @@ function go(mode) {
   $("#IMAGE_3").attr("src",imageDir+"3.jpg");
   $("#IMAGE_4").attr("src",imageDir+"4.jpg");
 
-  $("#timer").hide();
-  //counter =setInterval(timer, 1000); //1000 will  run it every 1 second
+  //$("#timer").hide();
+  counter =setInterval(timer, 1000); //1000 will  run it every 1 second
 }
 
 function home() { 
@@ -265,6 +265,7 @@ function timer()
   }
 
   $("#timer").text(count);
+  $("#timer").css("color", "black");
   if ( count <= 5) {
   	$("#timer").css("color", "red");
   }
