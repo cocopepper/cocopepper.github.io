@@ -23,6 +23,8 @@ var usedClue = 0;
 var count=30;
 var counter;
 
+var isSolved = false;
+
 var category;
 
 String.prototype.shuffle = function () {
@@ -108,6 +110,8 @@ function newWord(mode) {
   }
 
   category = mode;
+  isSolved = false;
+
   $(".content").show();
   $("#title").hide();
 
@@ -220,11 +224,11 @@ function select(letter, el) {
       score+= scoreCounter;
       $("#score").text(score);
       alert("Correct!");
-      gameTries--;
+      isSolved = true;
       clearInterval(counter);
-      
-      if (!isGameOver()) {     
-        newWord(category); 
+
+      if (isGameOver()) {
+        return;
       }
     }, 100);
   }
@@ -251,10 +255,13 @@ function timer()
   count = count - 1;
   if (count <= 0)
   {
-     clearInterval(counter);
-     alert("Time's Up!");
+    clearInterval(counter);
      //counter ended, do something here
-     return;
+
+    if (isGameOver()) {
+      return;
+    }
+    return;
   }
 
   $("#timer").text(count);
@@ -273,9 +280,8 @@ function pass() {
 function isGameOver() {
   if (checkTimesUp && count <= 0) {
     alert("Time's Up!");
-    return true;
   }
-  if (hasLimit && gameTries <= 0) {
+  if ((checkTimesUp && count <= 0 || !checkTimesUp || isSolved) && hasLimit && gameTries == 1) {
     alert("Game Over!");
     alert("Final Score: " + score);
     return true;

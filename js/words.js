@@ -1,4 +1,4 @@
-var isTimed = false;
+var isTimed = true;
 var checkTimesUp = true;
 
 var hasLimit = true;
