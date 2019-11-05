@@ -1,6 +1,6 @@
-var easyTimer=30;
-var moderateTimer = 45;
-var hardTimer=60;
+var easyTimer=45;
+var moderateTimer = 60;
+var hardTimer=90;
 
 var easyScore=5;
 var moderateScore=10;

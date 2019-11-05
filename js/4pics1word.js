@@ -1,3 +1,4 @@
+var timesUp = true;
 var letterDir = "img/letters/";
 var unusedBlock = letterDir + "used-answer-block.png";
 var words;
@@ -43,6 +44,10 @@ function pass() {
 let checker = (arr, target) => target.every(v => arr.includes(v));
 
 function isGameOver() {
+  if (timesUp && count <= 0) {
+    alert("Time's Up!");
+    return true;
+  }
   if (gameTries <= 0) {
     alert("Game Over!");
     alert("Final Score: " + score);
