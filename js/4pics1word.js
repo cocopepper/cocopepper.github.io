@@ -234,7 +234,7 @@ function select(letter, el) {
   }
 }
 
-function remove(block, letter) {
+function remove(block, letter) { 
   if (isGameOver()) {
     return;
   }
@@ -280,7 +280,13 @@ function pass() {
 function isGameOver() {
   if (checkTimesUp && count <= 0) {
     alert("Time's Up!");
+    if (hasLimit && gameTries == 1) {
+      alert("Game Over!");
+      alert("Final Score: " + score);
+    }
+    return true;
   }
+
   if ((checkTimesUp && count <= 0 || !checkTimesUp || isSolved) && hasLimit && gameTries == 1) {
     alert("Game Over!");
     alert("Final Score: " + score);
